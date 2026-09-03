@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Button</title>
+
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Background particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- ==================== SCREEN 1: Language ==================== -->
+    <div id="langScreen" class="screen active">
+        <div class="screen-content">
+            <h1 id="langTitle">Sprache waehlen</h1>
+            <p class="subtitle" id="langSubtitle">Waehle deine bevorzugte Sprache</p>
+            <div class="lang-options">
+                <button class="lang-btn" onclick="App.setLang('de')">Deutsch</button>
+                <button class="lang-btn" onclick="App.setLang('en')">English</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 2: Username ==================== -->
+    <div id="userScreen" class="screen">
+        <div class="screen-content">
+            <h1 id="userTitle">Benutzernamen waehlen</h1>
+            <p class="subtitle" id="userSubtitle">Dein Name wird lokal im Browser gespeichert</p>
+            <div class="input-group">
+                <input type="text" id="usernameInput" maxlength="20" autocomplete="off" spellcheck="false">
+                <div class="error-msg" id="usernameError"></div>
+            </div>
+            <button class="primary-btn" id="submitUser" onclick="App.submitUsername()">Loslegen</button>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 3: Game ==================== -->
+    <div id="gameScreen" class="screen">
+        <div class="game-container">
+
+            <!-- Left: Scoreboard -->
+            <div class="scoreboard">
+                <div class="scoreboard-header">
+                    <h2 id="sbTitle">Scoreboard</h2>
+                </div>
+                <div class="score-list" id="scoreList"></div>
+                <div class="scoreboard-divider"></div>
+                <div class="your-rank-bar">
+                    <span class="rank-num" id="rankNum">#1</span>
+                    <span class="username-display" id="usernameDisplay">user (0)</span>
+                </div>
+            </div>
+
+            <!-- Center: Button -->
+            <div class="game-center">
+                <div class="score-display">
+                    <div class="score-number" id="scoreNumber">0</div>
+                    <div class="reset-chance-label" id="resetChanceText">Reset-Wahrscheinlichkeit: 50%</div>
+                </div>
+
+                <div class="button-wrapper" id="buttonWrapper">
+                    <div class="button-pulse"></div>
+                    <div class="danger-ring" id="dangerRing"></div>
+                    <button class="the-button" id="theButton" onclick="App.pressButton()"></button>
+                    <div class="cooldown-overlay" id="cooldownOverlay">
+                        <span class="timer" id="cooldownTimer">1</span>
+                    </div>
+                </div>
+
+                <div class="game-msg" id="gameMsg"></div>
+
+                <div class="playtime">
+                    <span id="playtimeLabel">Spielzeit</span>
+                    <span id="playtimeValue">00:00</span>
+                </div>
+            </div>
+
+            <!-- Right spacer (visual balance on large screens) -->
+            <div style="width: 240px;" class="scoreboard-spacer"></div>
+
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Leave confirmation modal -->
+    <div class="modal-overlay" id="leaveModal">
+        <div class="modal">
+            <p id="leaveText">Willst du wirklich gehen? Du hast sowieso nichts besseres zu tun.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn primary" id="stayBtn" onclick="App.stayOnPage()">Bleiben</button>
+                <button class="modal-btn secondary" id="leaveBtn" onclick="App.leavePage()">Ja, gehen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts (order matters) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/username-filter.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/scoreboard.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>

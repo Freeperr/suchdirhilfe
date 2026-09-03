@@ -1,0 +1,724 @@
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --white: #ffffff;
+    --black: #1a1a1a;
+    --gray-100: #f5f5f5;
+    --gray-200: #eeeeee;
+    --gray-300: #e0e0e0;
+    --gray-500: #888888;
+    --gray-700: #444444;
+    --red: #e63946;
+    --red-dark: #c1121f;
+    --red-glow: rgba(230, 57, 70, 0.35);
+    --green: #2d6a4f;
+    --green-light: #d4edda;
+    --red-light: #f8d7da;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    padding: 40px 24px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 1;
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: all;
+    z-index: 2;
+}
+
+/* ===== BACKGROUND PARTICLES ===== */
+.particles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--gray-300);
+    opacity: 0.15;
+    animation: float linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.15; }
+    90% { opacity: 0.15; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1 {
+    font-weight: 600;
+    font-size: 1.75rem;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+}
+
+.subtitle {
+    color: var(--gray-500);
+    font-size: 0.95rem;
+}
+
+/* ===== LANGUAGE SCREEN ===== */
+.lang-options {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.lang-btn {
+    padding: 14px 44px;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: 2px solid var(--black);
+    background: transparent;
+    color: var(--black);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.lang-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--black);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition);
+    z-index: -1;
+}
+
+.lang-btn:hover {
+    color: var(--white);
+}
+
+.lang-btn:hover::after {
+    transform: scaleX(1);
+}
+
+/* ===== USERNAME SCREEN ===== */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-group input {
+    font-size: 1.15rem;
+    font-family: inherit;
+    padding: 14px 24px;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius);
+    outline: none;
+    width: 320px;
+    text-align: center;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    background: var(--gray-100);
+}
+
+.input-group input:focus {
+    border-color: var(--black);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(26, 26, 26, 0.06);
+}
+
+.char-count {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    margin-top: -4px;
+}
+
+.error-msg {
+    color: var(--red);
+    font-size: 0.88rem;
+    min-height: 22px;
+    transition: opacity 0.2s;
+}
+
+.primary-btn {
+    padding: 14px 44px;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 500;
+    border: none;
+    background: var(--black);
+    color: var(--white);
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all var(--transition);
+}
+
+.primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+}
+
+.primary-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ===== GAME SCREEN ===== */
+.game-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 72px;
+    flex-wrap: wrap;
+}
+
+.game-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* ===== THE BUTTON ===== */
+.button-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+}
+
+.button-pulse {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: var(--red-glow);
+    animation: pulse 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.15); opacity: 0.08; }
+}
+
+.the-button {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: var(--red);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 24px var(--red-glow);
+    position: relative;
+    z-index: 2;
+    outline: none;
+}
+
+.the-button:hover {
+    transform: scale(1.06);
+    box-shadow: 0 8px 32px rgba(230, 57, 70, 0.45);
+}
+
+.the-button:active {
+    transform: scale(0.93);
+    box-shadow: 0 2px 8px var(--red-glow);
+}
+
+/* Cooldown overlay */
+.cooldown-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.cooldown-overlay.active {
+    opacity: 1;
+}
+
+.cooldown-overlay .timer {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--red-dark);
+    font-variant-numeric: tabular-nums;
+}
+
+.the-button.pressed {
+    animation: buttonPress 0.15s ease;
+}
+
+@keyframes buttonPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.88); }
+    100% { transform: scale(1); }
+}
+
+/* Button danger ring — shows reset chance */
+.danger-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.danger-ring.warning {
+    border-color: #f4a261;
+    box-shadow: 0 0 12px rgba(244, 162, 97, 0.2);
+}
+
+.danger-ring.danger {
+    border-color: var(--red);
+    box-shadow: 0 0 16px var(--red-glow);
+}
+
+.danger-ring.critical {
+    border-color: var(--red-dark);
+    box-shadow: 0 0 24px rgba(194, 18, 31, 0.4);
+    animation: criticalPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes criticalPulse {
+    0%, 100% { box-shadow: 0 0 16px rgba(194, 18, 31, 0.3); }
+    50% { box-shadow: 0 0 32px rgba(194, 18, 31, 0.5); }
+}
+
+/* ===== SCORE DISPLAY ===== */
+.score-display {
+    text-align: center;
+}
+
+.score-number {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    transition: color 0.3s;
+}
+
+.score-number.win-anim {
+    animation: scoreWin 0.5s ease;
+}
+
+.score-number.lose-anim {
+    animation: scoreLose 0.5s ease;
+}
+
+@keyframes scoreWin {
+    0% { transform: scale(1); color: var(--black); }
+    30% { transform: scale(1.3); color: var(--green); }
+    100% { transform: scale(1); color: var(--black); }
+}
+
+@keyframes scoreLose {
+    0% { transform: scale(1); }
+    25% { transform: translateX(-8px); }
+    50% { transform: translateX(8px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: scale(1); color: var(--black); }
+}
+
+.reset-chance-label {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    margin-top: 4px;
+    transition: color 0.3s;
+}
+
+.reset-chance-label.high {
+    color: var(--red);
+    font-weight: 600;
+}
+
+.reset-chance-label.medium {
+    color: #f4a261;
+    font-weight: 500;
+}
+
+/* ===== GAME MESSAGE ===== */
+.game-msg {
+    font-size: 1rem;
+    font-weight: 600;
+    min-height: 28px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.game-msg.visible {
+    opacity: 1;
+}
+
+.game-msg.win { color: var(--green); }
+.game-msg.lose { color: var(--red-dark); }
+
+/* ===== PLAYTIME ===== */
+.playtime {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ===== SCOREBOARD ===== */
+.scoreboard {
+    width: 240px;
+}
+
+.scoreboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.score-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.score-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+.score-entry:hover {
+    background: var(--gray-100);
+}
+
+.score-entry.me {
+    background: var(--gray-100);
+    font-weight: 600;
+}
+
+.score-entry .rank {
+    color: var(--gray-500);
+    font-size: 0.82rem;
+    min-width: 28px;
+}
+
+.score-entry .rank.gold { color: #d4a017; }
+.score-entry .rank.silver { color: #aaa; }
+.score-entry .rank.bronze { color: #cd7f32; }
+
+.score-entry .name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0 10px;
+}
+
+.score-entry .points {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    min-width: 30px;
+    text-align: right;
+}
+
+.scoreboard-divider {
+    height: 1px;
+    background: var(--gray-200);
+    margin: 12px 0;
+}
+
+.your-rank-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    color: var(--gray-700);
+}
+
+.your-rank-bar .rank-num {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--black);
+}
+
+.your-rank-bar .username-display {
+    color: var(--gray-500);
+}
+
+/* ===== TOAST ===== */
+.toast {
+    position: fixed;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-24px);
+    padding: 14px 32px;
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 200;
+    backdrop-filter: blur(8px);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast.win {
+    background: rgba(45, 106, 79, 0.12);
+    color: var(--green);
+    border: 1px solid rgba(45, 106, 79, 0.2);
+}
+
+.toast.lose {
+    background: rgba(230, 57, 70, 0.1);
+    color: var(--red-dark);
+    border: 1px solid rgba(230, 57, 70, 0.2);
+}
+
+/* ===== LEAVE MODAL ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal {
+    background: var(--white);
+    padding: 40px 44px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal {
+    transform: scale(1);
+}
+
+.modal p {
+    margin-bottom: 28px;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--gray-700);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 12px 32px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all var(--transition);
+}
+
+.modal-btn.primary {
+    background: var(--black);
+    color: var(--white);
+}
+
+.modal-btn.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.modal-btn.secondary {
+    background: var(--gray-200);
+    color: var(--gray-700);
+}
+
+.modal-btn.secondary:hover {
+    background: var(--gray-300);
+}
+
+/* ===== SCORE POPUP ===== */
+.score-popup {
+    position: absolute;
+    font-size: 1.4rem;
+    font-weight: 700;
+    pointer-events: none;
+    z-index: 100;
+    animation: popUp 1s ease forwards;
+}
+
+.score-popup.win { color: var(--green); }
+.score-popup.lose { color: var(--red-dark); }
+
+@keyframes popUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.4); }
+}
+
+/* ===== SCREEN TRANSITIONS ===== */
+.screen-enter {
+    animation: screenIn 0.5s ease forwards;
+}
+
+@keyframes screenIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.screen-exit {
+    animation: screenOut 0.3s ease forwards;
+}
+
+@keyframes screenOut {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); }
+}
+
+/* ===== RIPPLE ON BUTTON CLICK ===== */
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: ripple 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to { transform: scale(4); opacity: 0; }
+}
+
+/* ===== STREAK FIRE (visual flair) ===== */
+.streak-fire {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0;
+    transition: font-size 0.3s ease;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.streak-fire.tier1 { font-size: 1rem; }
+.streak-fire.tier2 { font-size: 1.3rem; }
+.streak-fire.tier3 { font-size: 1.6rem; }
+
+/* ===== EMPTY SCOREBOARD ===== */
+.empty-state {
+    text-align: center;
+    color: var(--gray-500);
+    font-size: 0.9rem;
+    padding: 20px 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+    .game-container {
+        gap: 40px;
+    }
+
+    .scoreboard {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .the-button {
+        width: 130px;
+        height: 130px;
+    }
+
+    .button-wrapper {
+        width: 130px;
+        height: 130px;
+    }
+
+    .score-number {
+        font-size: 2.4rem;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+}

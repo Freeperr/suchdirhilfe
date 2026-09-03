@@ -100,7 +100,7 @@ const UsernameFilter = (() => {
 
         for (const word of BLOCKED_WORDS) {
             const cleanWord = normalize(word);
-            if (normalized.includes(cleanWord) || cleanWord.includes(normalized)) {
+            if (normalized.includes(cleanWord)) {
                 return { ok: false, msg: 'errorBad' };
             }
         }

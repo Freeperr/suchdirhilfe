@@ -92,36 +92,42 @@ const App = (() => {
             return;
         }
 
-        const taken = await Scoreboard.isTaken(input);
-        if (taken) {
-            errEl.textContent = t.errorExists;
+        try {
+            const taken = await Scoreboard.isTaken(input);
+            if (taken) {
+                errEl.textContent = t.errorExists;
+                errEl.style.opacity = '1';
+                return;
+            }
+
+            errEl.style.opacity = '0';
+            username = input;
+            localStorage.setItem(STORAGE_USER, username);
+            localStorage.setItem(STORAGE_PLAYTIME, 0);
+
+            // Initialize score if new
+            if (!(await Scoreboard.exists(username))) {
+                await Scoreboard.setScore(username, 0);
+            }
+
+            score = await Scoreboard.getScore(username);
+
+            // Restore or initialize reset chance
+            const savedChance = parseInt(localStorage.getItem(STORAGE_CHANCE));
+            if (!isNaN(savedChance) && savedChance >= BASE_CHANCE && savedChance <= MAX_CHANCE) {
+                resetChance = savedChance;
+            } else {
+                resetChance = BASE_CHANCE;
+                localStorage.setItem(STORAGE_CHANCE, resetChance);
+            }
+
+            AudioManager.playClick();
+            startGame();
+        } catch (e) {
+            console.error('submitUsername error:', e);
+            errEl.textContent = e && e.message ? e.message : 'Error';
             errEl.style.opacity = '1';
-            return;
         }
-
-        errEl.style.opacity = '0';
-        username = input;
-        localStorage.setItem(STORAGE_USER, username);
-        localStorage.setItem(STORAGE_PLAYTIME, 0);
-
-        // Initialize score if new
-        if (!(await Scoreboard.exists(username))) {
-            await Scoreboard.setScore(username, 0);
-        }
-
-        score = await Scoreboard.getScore(username);
-
-        // Restore or initialize reset chance
-        const savedChance = parseInt(localStorage.getItem(STORAGE_CHANCE));
-        if (!isNaN(savedChance) && savedChance >= BASE_CHANCE && savedChance <= MAX_CHANCE) {
-            resetChance = savedChance;
-        } else {
-            resetChance = BASE_CHANCE;
-            localStorage.setItem(STORAGE_CHANCE, resetChance);
-        }
-
-        AudioManager.playClick();
-        startGame();
     }
 
     // ---------- Game ----------

@@ -14,7 +14,9 @@
 const SUPABASE_URL = 'https://fzquxlmnadutjocjfqjz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6cXV4bG1uYWR1dGpvY2pmcWp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NDcxOTAsImV4cCI6MjEwNDAyMzE5MH0.3SInvEKaDQllZb2koaGAdQXhpMYlRstTTVRrEezbqOM';
 
-const supabase = SUPABASE_URL.startsWith('https://')
+const supabase = (SUPABASE_URL.startsWith('https://')
+    && typeof window.supabase !== 'undefined'
+    && typeof window.supabase.createClient === 'function')
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
     : null;
 

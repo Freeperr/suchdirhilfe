@@ -1,9 +1,8 @@
 -- ============================================================
--- "The Button" — Supabase Setup
--- Run this in: Supabase Dashboard > SQL Editor > New query
+-- THE BUTTON — SECURE SUPABASE SETUP
 -- ============================================================
 
--- 1) Create the players table
+-- Tabelle
 create table if not exists public.players (
     id bigint generated always as identity primary key,
     username text not null unique,
@@ -12,26 +11,76 @@ create table if not exists public.players (
     created_at timestamptz not null default now()
 );
 
--- 2) Enable Row Level Security (RLS)
+-- RLS aktivieren
 alter table public.players enable row level security;
 
--- 3) Anonymous read of everyone (needed for the global scoreboard)
-create policy "allow public read"
-on public.players for select
+
+-- ============================================================
+-- POLICIES
+-- ============================================================
+
+-- Jeder darf die Rangliste lesen
+create policy "public can read players"
+on public.players
+for select
+to anon, authenticated
 using (true);
 
--- 4) Anonymous users can insert a new player (create their account)
-create policy "allow public insert"
-on public.players for insert
-with check (true);
 
--- 5) Anonymous users can update scores/playtime
---    (everyone can update anyone's row — simple public game board)
-create policy "allow public update"
-on public.players for update
-using (true);
+-- Spieler dürfen einen Account erstellen
+create policy "public can create player"
+on public.players
+for insert
+to anon, authenticated
+with check (
+    score = 0
+    and playtime = 0
+);
 
--- 6) Nobody can delete (optional, just for safety)
-create policy "deny public delete"
-on public.players for delete
-using (false);
+
+-- KEIN direktes UPDATE
+-- KEIN DELETE
+--
+-- Es gibt absichtlich keine UPDATE- oder DELETE-Policy.
+
+
+-- ============================================================
+-- SECURE FUNCTION
+-- ============================================================
+
+create or replace function public.add_score(
+    player_id bigint,
+    amount bigint
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+
+    -- Keine negativen Werte erlauben
+    if amount <= 0 then
+        raise exception 'Invalid amount';
+    end if;
+
+    -- Maximale Änderung pro Aufruf begrenzen
+    if amount > 1 then
+        raise exception 'Amount too large';
+    end if;
+
+    -- Score erhöhen
+    update public.players
+    set score = score + amount
+    where id = player_id;
+
+end;
+$$;
+
+
+-- ============================================================
+-- FUNCTION PERMISSION
+-- ============================================================
+
+grant execute on function public.add_score(bigint, bigint)
+to anon, authenticated;

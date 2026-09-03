@@ -75,6 +75,7 @@ const App = (() => {
         $('sbTitle').textContent = t.sbTitle;
         $('stayBtn').textContent = t.stayBtn;
         $('leaveBtn').textContent = t.leaveBtn;
+        $('logoutBtn').textContent = t.logoutBtn;
         $('leaveText').textContent = t.leaveText;
     }
 
@@ -321,6 +322,34 @@ const App = (() => {
 
     // ---------- Leave Handling ----------
 
+    function logout() {
+        if (!username) {
+            showScreen('userScreen');
+            return;
+        }
+
+        const confirmed = window.confirm(T[lang].logoutConfirm);
+        if (!confirmed) return;
+
+        if (playtimeInterval) {
+            clearInterval(playtimeInterval);
+            playtimeInterval = null;
+        }
+
+        localStorage.removeItem(STORAGE_USER);
+        localStorage.removeItem(STORAGE_PLAYTIME);
+        isPlaying = false;
+        username = '';
+        score = 0;
+        playtimeSeconds = 0;
+        $('usernameInput').value = '';
+        $('usernameError').style.opacity = '0';
+        $('usernameError').textContent = '';
+        $('playtimeValue').textContent = '00:00';
+        $('scoreNumber').textContent = '0';
+        showScreen('userScreen');
+    }
+
     function onBeforeUnload(e) {
         e.preventDefault();
         e.returnValue = '';
@@ -389,6 +418,7 @@ const App = (() => {
         setLang,
         submitUsername,
         pressButton,
+        logout,
         stayOnPage,
         leavePage
     };

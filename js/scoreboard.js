@@ -1,44 +1,10 @@
 /**
- * Scoreboard management — window.supabaseClient based.
+ * Scoreboard management — Supabase-only global leaderboard.
  * Each username exists only once; highest score wins.
- * Falls back to localStorage if window.supabaseClient is not configured.
  */
 const Scoreboard = (() => {
 
-    const LOCAL_KEY = 'theButtonScores_v2';
-
     const useSupabase = () => typeof window.supabaseClient !== 'undefined' && window.supabaseClient !== null;
-
-    // ---------- Local fallback ----------
-    function localGetAll() {
-        try {
-            const raw = localStorage.getItem(LOCAL_KEY);
-            const arr = raw ? JSON.parse(raw) : [];
-            return Array.isArray(arr) ? arr.map(row => ({
-                username: row.username || row.name || '',
-                playtime: Number(row.playtime || 0),
-                score: Number(row.score || 0)
-            })).filter(row => row.username) : [];
-        } catch {
-            return [];
-        }
-    }
-
-    function localSaveAll(arr) {
-        localStorage.setItem(LOCAL_KEY, JSON.stringify(arr.map(row => ({
-            username: row.username || row.name || '',
-            playtime: Number(row.playtime || 0),
-            score: Number(row.score || 0)
-        })).filter(row => row.username)));
-    }
-
-    function localSet(username, score) {
-        const arr = localGetAll();
-        const idx = arr.findIndex(e => e.username === username);
-        if (idx >= 0) arr[idx].score = score;
-        else arr.push({ username, playtime: 0, score });
-        localSaveAll(arr);
-    }
 
     // ---------- Helpers ----------
     function normalize(row) {
@@ -64,7 +30,7 @@ const Scoreboard = (() => {
     // Returns true if the username already exists in the DB
     async function isTaken(username) {
         if (!useSupabase()) {
-            return localGetAll().some(e => e.username === username);
+            return false;
         }
         const { data, error } = await window.supabaseClient
             .from(window.DB_TABLE)
@@ -85,8 +51,7 @@ const Scoreboard = (() => {
     // Get a player's current score (0 if not found)
     async function getScore(username) {
         if (!useSupabase()) {
-            const e = localGetAll().find(x => x.username === username);
-            return e ? e.score : 0;
+            return 0;
         }
         const { data, error } = await window.supabaseClient
             .from(window.DB_TABLE)
@@ -100,7 +65,6 @@ const Scoreboard = (() => {
     // Update score for a user. If user doesn't exist, creates them.
     async function setScore(username, score) {
         if (!useSupabase()) {
-            localSet(username, score);
             return;
         }
         const { error } = await window.supabaseClient
@@ -125,9 +89,7 @@ const Scoreboard = (() => {
     // Top N players ordered by score, then playtime
     async function getTop(n = 10) {
         if (!useSupabase()) {
-            return localGetAll()
-                .sort((a, b) => b.score - a.score)
-                .slice(0, n);
+            return [];
         }
         const { data, error } = await window.supabaseClient
             .from(window.DB_TABLE)
@@ -145,9 +107,7 @@ const Scoreboard = (() => {
     // The rank (1-based) of a user among all players
     async function getRank(username) {
         if (!useSupabase()) {
-            const sorted = localGetAll().sort((a, b) => b.score - a.score);
-            const idx = sorted.findIndex(e => e.username === username);
-            return idx >= 0 ? idx + 1 : sorted.length + 1;
+            return 9999;
         }
         const { data, error } = await window.supabaseClient
             .from(window.DB_TABLE)

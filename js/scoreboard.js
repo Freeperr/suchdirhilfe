@@ -1,13 +1,13 @@
 /**
- * Scoreboard management — Supabase based.
+ * Scoreboard management — window.supabaseClient based.
  * Each username exists only once; highest score wins.
- * Falls back to localStorage if Supabase is not configured.
+ * Falls back to localStorage if window.supabaseClient is not configured.
  */
 const Scoreboard = (() => {
 
     const LOCAL_KEY = 'theButtonScores_v2';
 
-    const useSupabase = () => typeof supabase !== 'undefined' && supabase !== null;
+    const useSupabase = () => typeof window.supabaseClient !== 'undefined' && window.supabaseClient !== null;
 
     // ---------- Local fallback ----------
     function localGetAll() {
@@ -41,8 +41,8 @@ const Scoreboard = (() => {
     }
 
     async function createUser(username) {
-        const { error } = await supabase
-            .from(DB_TABLE)
+        const { error } = await window.supabaseClient
+            .from(window.DB_TABLE)
             .insert([{ username, playtime: 0, score: 0 }]);
         if (error && !error.message.includes('duplicate') && !error.message.includes('unique')) {
             console.error('createUser error:', error);
@@ -56,8 +56,8 @@ const Scoreboard = (() => {
         if (!useSupabase()) {
             return localGetAll().some(e => e.name === username);
         }
-        const { data, error } = await supabase
-            .from(DB_TABLE)
+        const { data, error } = await window.supabaseClient
+            .from(window.DB_TABLE)
             .select('username')
             .eq('username', username)
             .limit(1);
@@ -78,8 +78,8 @@ const Scoreboard = (() => {
             const e = localGetAll().find(x => x.name === username);
             return e ? e.score : 0;
         }
-        const { data, error } = await supabase
-            .from(DB_TABLE)
+        const { data, error } = await window.supabaseClient
+            .from(window.DB_TABLE)
             .select('score')
             .eq('username', username)
             .limit(1);
@@ -93,8 +93,8 @@ const Scoreboard = (() => {
             localSet(username, score);
             return;
         }
-        const { data, error } = await supabase
-            .from(DB_TABLE)
+        const { data, error } = await window.supabaseClient
+            .from(window.DB_TABLE)
             .update({ score })
             .eq('username', username);
         if (error) {
@@ -110,8 +110,8 @@ const Scoreboard = (() => {
     // Update playtime (seconds) for a user.
     async function setPlaytime(username, playtime) {
         if (!useSupabase()) return;
-        const { error } = await supabase
-            .from(DB_TABLE)
+        const { error } = await window.supabaseClient
+            .from(window.DB_TABLE)
             .update({ playtime })
             .eq('username', username);
         if (error && !error.message.includes('No rows')) {
@@ -126,8 +126,8 @@ const Scoreboard = (() => {
                 .sort((a, b) => b.score - a.score)
                 .slice(0, n);
         }
-        const { data, error } = await supabase
-            .from(DB_TABLE)
+        const { data, error } = await window.supabaseClient
+            .from(window.DB_TABLE)
             .select('username, playtime, score')
             .order('score', { ascending: false })
             .order('playtime', { ascending: false })
@@ -146,8 +146,8 @@ const Scoreboard = (() => {
             const idx = sorted.findIndex(e => e.name === username);
             return idx >= 0 ? idx + 1 : sorted.length + 1;
         }
-        const { data, error } = await supabase
-            .from(DB_TABLE)
+        const { data, error } = await window.supabaseClient
+            .from(window.DB_TABLE)
             .select('username, score')
             .order('score', { ascending: false });
         if (error || !data) return 9999;

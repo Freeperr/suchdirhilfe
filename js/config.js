@@ -21,3 +21,7 @@ const supabase = (SUPABASE_URL.startsWith('https://')
     : null;
 
 const DB_TABLE = 'players';
+
+// Expose to global scope so other scripts can read them
+window.supabaseClient = supabase;
+window.DB_TABLE = DB_TABLE;

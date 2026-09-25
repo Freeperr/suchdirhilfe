@@ -1,21 +1,12 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import type { ReactNode } from "react";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "suchdirhilfe.de",
-  description: "AI-Tools für dumme Alltagsprobleme",
+  title: "suchdirhilfe.de – Domain kaufen",
+  description: "suchdirhilfe.de steht zum Verkauf. Sende deinen Preisvorschlag direkt an info@fynnpetersen.de.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
-  return (
-    <html lang="de" className={`${geist.variable} h-full`}>
-      <body className="h-full antialiased">{children}</body>
-    </html>
-  );
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return <html lang="de"><body>{children}</body></html>;
 }
